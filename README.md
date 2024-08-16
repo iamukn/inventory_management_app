@@ -71,8 +71,13 @@ Open a web browser and view the API documentation on http://127.0.0.1:8000/swagg
       "password": "string"
     }
     ```
+
 - **Response:**
   - **200 OK:** 
+
+#### GET /api/v1/auth/logout
+- **Description:** logout a user .
+- **200 OK:**
 
 ### Products
 
