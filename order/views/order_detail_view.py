@@ -3,7 +3,7 @@ from django.db import transaction
 from order.models import Orders
 from order.serializer import OrderSerializer
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -19,7 +19,7 @@ class OrderDetailView(APIView):
         # updates permission
         if request.method != "GET":
             self.permission_classes = [IsAdminUser]
-
+        self.permission_classes = [IsAuthenticated]
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, id, *args, **kwargs):

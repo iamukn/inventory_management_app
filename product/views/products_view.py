@@ -20,7 +20,7 @@ class Products_view(APIView):
             self.permission_classes = [IsAdminUser]
         
         else:
-            self.permission_classes = [AllowAny]
+            self.permission_classes = [IsAuthenticated]
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -62,7 +62,7 @@ class Products_view(APIView):
         Args:
             -> json data - {"name": "shoes", "description": "footwears", "quantity": 3, "price": 9.25}
         Returns:
-            -> json data 200 - {"status": "created", "name": "shoes", "description": "footwears", "quantity": 3, "price": 9.25}
+            -> json data 201 - {"status": "created", "name": "shoes", "description": "footwears", "quantity": 3, "price": 9.25}
         """
 
         product = request.data
@@ -72,7 +72,6 @@ class Products_view(APIView):
             with transaction.atomic():
                 # serialize the product data
                 serializer = ProductsSerializer(data=product)
-                print(product)
         
                 # check if the product is valid
                 if serializer.is_valid():

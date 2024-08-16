@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from product.serializer import ProductsSerializer
 from product.models import Products
 
@@ -20,11 +20,11 @@ class ProductDetailView(APIView):
             self.permission_classes = [IsAdminUser]
 
         else:
-            self.permission_classes = [AllowAny]
+            self.permission_classes = [IsAuthenticated]
 
         return super().dispatch(request, *args, **kwargs)
 
-    # GET all products
+    # GET a product
     def get(self, request,id, *args, **kwargs):
         """
         This method handles GET requests to the `/products/<int:id>` endpoint and returns a dict of the product

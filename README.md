@@ -50,13 +50,113 @@ This Django application is a basic inventory management system that includes use
 python manage.py runserver
 ```
 
+**Running test**
+```bash
+python manage.py test authentication/tests order/tests product/tests
+```
 **Accessing the Application**
 
-Open a web browser and go to http://127.0.0.1:8000/swagger/
+Open a web browser and view the API documentation on http://127.0.0.1:8000/swagger/
 
-**Additional Notes**
+**API ENDPOINTS**
+### Authentication
 
-* The application uses SQLite for the database for simplicity. For production environments, consider using a more robust database like PostgreSQL or MySQL.
-* Implement unit tests for key functionalities to ensure code quality and maintainability.
-* Consider adding error handling and validation for API requests.
-* Explore additional features like search functionality, product categories, and more detailed reporting.
+#### POST /api/v1/auth/login
+- **Description:** Authenticate a user .
+- **Request:**
+  - **Body:** 
+    ```json
+    {
+      "username": "string",
+      "password": "string"
+    }
+    ```
+- **Response:**
+  - **200 OK:** 
+
+### Products
+
+#### GET /ap1/v1/products
+- **Description:** Retrieve a list of all products.
+- **Request:**
+- Access to only Logged in users 
+- **Response:**
+  - **200 OK:**
+    ```json
+    [
+      {
+        "id": 1,
+        "name": "Adidas",
+        "description": "shoe",
+        "price": "$5.0",
+        "quantity": 23
+      }
+    ]
+    ```
+
+#### POST /ap1/v1/products
+- **Description:** Create a new product entry.
+- **access control:** ADMIN only 
+- **Request:**`
+  - **Body:**
+    ```json
+    {
+      "name": "Adidas",
+      "description": "shoes",
+      "price":50,
+      "quantity": 23
+    }
+    ```
+- **Response:**
+  - **201 Created:** 
+    ```json
+    {
+      "id": 1,
+      "name": "Adidas",
+      "description": "shoes",
+      "price":"$50",
+      "quantity": 23
+    }
+    ```
+  - **400 Bad Request:** Invalid data.
+
+#### PATCH  PUT  DELETE /api/v1/products/{id}/
+- **Description:** Update and deletes details of a product by only admin users.
+- PATCH and PUT
+  ``` json
+     {
+        "name": "new name",
+        "price": 54
+     }
+  ```
+
+### Orders
+
+#### POST /api/v1/orders/
+- **Description**: Creates an order
+- **body**
+
+    {
+    "product":[{"id": 1, "quantity": 3}]
+    } 
+
+#### GET /api/v1/orders/{id}/status
+-> Open to all users
+
+#### PATCH /api/v1/orders/{id}/status
+-> only admin users
+**body**
+{
+"status": "completed"
+}
+
+
+### Reports
+#### GET /api/v1/orders/salesreports
+-> only admin users
+#### GET /api/v1/products/stockreports
+-> only admin users
+
+
+
+This structure clearly communicates how to use each endpoint, what to expect in terms of input and output, and any special requirements like authentication.

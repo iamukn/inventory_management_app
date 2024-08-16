@@ -2,7 +2,7 @@
 from django.db import transaction
 from order.serializer import OrderSerializer
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -19,6 +19,7 @@ class OrderView(APIView):
         if request.method != "POST":
             self.permission_classes = [IsAdminUser]
 
+        self.permission_classes = [IsAuthenticated]
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
