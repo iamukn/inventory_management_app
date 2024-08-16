@@ -135,21 +135,22 @@ Open a web browser and view the API documentation on http://127.0.0.1:8000/swagg
 #### POST /api/v1/orders/
 - **Description**: Creates an order
 - **body**
-
+```json
     {
     "product":[{"id": 1, "quantity": 3}]
     } 
-
+```
 #### GET /api/v1/orders/{id}/status
 -> Open to all users
 
 #### PATCH /api/v1/orders/{id}/status
 -> only admin users
 **body**
+``` json
 {
 "status": "completed"
 }
-
+```
 
 ### Reports
 #### GET /api/v1/orders/salesreports
