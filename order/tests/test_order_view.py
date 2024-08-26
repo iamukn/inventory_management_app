@@ -2,7 +2,7 @@
 from authentication.tests.test_user import test_user, admin_user
 from django.urls import reverse
 from product.models import Products
-from order.models import Orders
+from order.models import Orders, OrdersItem
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -24,10 +24,20 @@ class OrderTest(APITestCase):
 
         # create an order
         self.order = Orders.objects.create(
-            products=[{'id': self.product.id, "quantity": 3}]
+            user=self.user
                 )
 
         self.order.save()
+
+        self.ordersItem = OrdersItem.objects.create(
+            order=self.order,
+            product_id=self.product.id,
+            quantity=5
+                )
+
+        self.ordersItem.save()
+
+
 
 
 
@@ -39,7 +49,7 @@ class OrderTest(APITestCase):
         login_res = self.client.post(login_url, data, format='json')
 
         url = reverse('orders')
-        data = {"products": [{"id":1, "quantity": 5}]}
+        data = {"items": [{"product_id":1, "quantity": 5}]}
 
         response = self.client.post(url, data, format='json')
         # assert response
