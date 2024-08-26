@@ -26,6 +26,7 @@ class OrderView(APIView):
         # get the data from the request
 
         data = request.data
+        data['user'] = request.user.id
 
         with transaction.atomic():
             try:
@@ -37,9 +38,9 @@ class OrderView(APIView):
                     serializer.save()
                     # remove the status
                     data=serializer.data
-                    data.pop('status')
 
                     return Response(data, status=status.HTTP_201_CREATED)
+                print('Invalid Serializer')
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             #handle errors
             except Exception as e:

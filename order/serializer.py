@@ -2,20 +2,39 @@
 from rest_framework.views import APIView
 from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework import status
-from order.models import Orders
+from order.models import Orders, OrdersItem
 from product.models import Products
 
 """ Orders Serializer """
+
+class OrdersItemSerializer(ModelSerializer):
+    class Meta:
+        model = OrdersItem
+        fields = ['id', 'product_id', 'quantity']
+
+
+
+
 class OrderSerializer(ModelSerializer):
+    # nested serializer
+    items = OrdersItemSerializer(many=True)
+
     class Meta:
         model = Orders
         fields = "__all__"
         depth: 1
 
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        order = Orders.objects.create(**validated_data)
+        for item_data in items_data:
+            OrdersItem.objects.create(order=order, **item_data)
+        return order
+
 
     def validate(self, data):
         # check if the status is either pending, completed or cancelled
-        if 'products' in data:
+        if 'items' in data:
             return data
 
         elif 'status' in data:
@@ -29,10 +48,10 @@ class OrderSerializer(ModelSerializer):
         orders = super().to_internal_value(data)
         total = 0
         # check if the data contains data
-        if orders.get('products'):
+        if orders.get('items'):
             # fetch the price of each products
-            for order in orders['products']:
-                id = order.get('id')
+            for order in orders['items']:
+                id = order.get('product_id')
                 product = Products.objects.get(id=id)
                 price = product.price / 100
                 quantity = order.get('quantity')
@@ -48,5 +67,14 @@ class OrderSerializer(ModelSerializer):
 
             # update the total with the total price
             orders['total'] = total
+            print(total)
 
         return orders
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+
+        res.pop('user')
+        res.pop('status')
+
+        return res
