@@ -26,7 +26,7 @@ class OrderSerializer(ModelSerializer):
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
-        order = Orders.objects.create(**validated_data)
+        order = Orders.objects.create(status='pending', **validated_data)
         for item_data in items_data:
             OrdersItem.objects.create(order=order, **item_data)
         return order
@@ -67,7 +67,6 @@ class OrderSerializer(ModelSerializer):
 
             # update the total with the total price
             orders['total'] = total
-            print(total)
 
         return orders
 
@@ -75,6 +74,5 @@ class OrderSerializer(ModelSerializer):
         res = super().to_representation(instance)
 
         res.pop('user')
-        res.pop('status')
 
         return res
