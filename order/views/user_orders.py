@@ -36,7 +36,7 @@ class UserOrders(APIView):
             orders = Orders.objects.filter(user=request.user)
             serializer = OrderSerializer(orders, many=True)
             
-            purchased_items = []
+            purchased_items = {}
             #return Response(serializer.data, status=status.HTTP_200_OK)
 
             for data in serializer.data:
@@ -46,25 +46,18 @@ class UserOrders(APIView):
                     for item in items:
                         product = Products.objects.get(id=item.get('product_id'))
                         serializer = ProductsSerializer(product)
-                        data = serializer.data
+                        item_data = serializer.data
 
-                        # add to the purchased_items 
-                        purchased_items.append(data)
-                        #s sort based on the quantity key
+                        # add the data to the purchased_items
+                        keys = (item_data['name'], item_data['id'])
 
-            
+                        if keys not in purchased_items or item['quantity'] > purchased_items[keys]['quantity']:
+                            item_data['quantity'] = item['quantity']
+                            purchased_items[keys] = item_data
 
-            product_dict = {}
 
-            for product in purchased_items:
-                key = (product["name"], product["id"])  # Use (name, id) as the unique key
-                
-                if key not in product_dict or product["quantity"] > product_dict[key]["quantity"]:
-                    product_dict[key] = product
-
-            # Convert the dictionary values to a list
-            unique_products = list(product_dict.values())
-        
-            unique_products = sorted(unique_products, key= lambda x : x.get('quantity'), reverse=True)
-            return Response(unique_products, status=status.HTTP_200_OK)
+            # convert the object to a dict
+            unique_data = list(purchased_items.values())
+            sorted_data = sorted(unique_data, key=lambda x: x.get('quantity'), reverse=True)
+            return Response(sorted_data, status=status.HTTP_200_OK)
         return Response({"detail": "Access denied, please authenticate"},status=status.HTTP_403_FORBIDDEN)
