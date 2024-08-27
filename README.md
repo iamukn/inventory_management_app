@@ -61,6 +61,20 @@ Open a web browser and view the API documentation on http://127.0.0.1:8000/swagg
 **API ENDPOINTS**
 ### Authentication
 
+#### POST /api/v1/auth/signup
+- **Description:** Register a user .
+- **Request:**
+   - **Body:**
+     ```json
+     {
+      "username": "string",
+      "password": "string" or digits,
+     }
+    ```
+
+- **Response:**
+  - **201 CREATED:**
+
 #### POST /api/v1/auth/login
 - **Description:** Authenticate a user .
 - **Request:**
@@ -162,7 +176,8 @@ Open a web browser and view the API documentation on http://127.0.0.1:8000/swagg
 -> only admin users
 #### GET /api/v1/products/stockreports
 -> only admin users
-
+#### GET /api/v1/orders/order-history
+-> gets unique purchase history made by a user
 
 
 This structure clearly communicates how to use each endpoint, what to expect in terms of input and output, and any special requirements like authentication.
