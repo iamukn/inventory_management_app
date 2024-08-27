@@ -92,3 +92,14 @@ class OrderTest(APITestCase):
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue('daily_report' and 'weekly_report' and 'monthly_report' in res.json()) 
+
+    def test_user_order_history(self):
+        # login
+        login_url = reverse('login')
+        data = {"username": self.user.username, "password": "password"}
+        login_response = self.client.post(login_url, data, format='json')
+        #get order history
+        url = reverse('order-history')
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(type(res.json()) == list)
